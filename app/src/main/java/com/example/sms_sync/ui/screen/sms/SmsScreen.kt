@@ -1,7 +1,9 @@
-package com.example.sms_sync.screen.sms
+package com.example.sms_sync.ui.screen.sms
 
-import android.content.IntentFilter
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,17 +21,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
+import androidx.compose.ui.window.Dialog
 import com.example.sms_sync.data.model.SmsData
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,11 +42,11 @@ fun SmsScreen(
 ) {
     val context = LocalContext.current
     val smsList by viewModel.smsList.collectAsState()
+    var selectedSms by remember { mutableStateOf<SmsData?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.loadSms(context)
     }
-
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("SMS Sync") })
@@ -51,16 +54,25 @@ fun SmsScreen(
     ) { padding ->
         LazyColumn(contentPadding = padding) {
             items(smsList) { sms ->
-                SmsItem(sms)
+                SmsItem(sms) {
+                    selectedSms = sms
+                }
+            }
+        }
+        selectedSms?.let {
+            SmsPopupDialog(sms = it) {
+                selectedSms = null
             }
         }
     }
 }
 
 @Composable
-//initial function to test functionality
-fun SmsItemInitial(sms: SmsData) {
-    Column(modifier = Modifier.padding(16.dp)) {
+//initial function to test functionality ---> To be removed later
+fun SmsItemInitial(sms: SmsData, onClick: ()-> Unit) {
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
         Text(text = "From: ${sms.from}", style = MaterialTheme.typography.bodyLarge)
         Text(text = sms.body, style = MaterialTheme.typography.bodyMedium)
         Text(text = sms.receivedAt, style = MaterialTheme.typography.bodySmall)
@@ -69,8 +81,9 @@ fun SmsItemInitial(sms: SmsData) {
 }
 
 @Composable
-fun SmsItem(sms: SmsData) {
+fun SmsItem(sms: SmsData, onClick: () -> Unit) {
     Card(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -110,6 +123,32 @@ fun SmsItem(sms: SmsData) {
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.secondary
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun SmsPopupDialog(sms: SmsData, onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = Modifier
+                .background(Color.Black.copy(alpha = 0.1f))
+                .clickable(onClick = onDismiss)
+        ) {
+            Card(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(24.dp),
+                shape = MaterialTheme.shapes.large,
+                elevation = CardDefaults.cardElevation(8.dp)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Text("From: ${sms.from}", style = MaterialTheme.typography.titleMedium)
+                    Text(sms.body, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(top = 8.dp))
+                    Text("Received: ${sms.receivedAt}", style = MaterialTheme.typography.bodySmall)
+                    Text("Type: ${sms.type}", style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(top = 4.dp))
+                }
             }
         }
     }

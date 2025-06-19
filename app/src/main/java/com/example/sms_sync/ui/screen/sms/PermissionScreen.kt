@@ -1,4 +1,4 @@
-package com.example.sms_sync.screen.sms
+package com.example.sms_sync.ui.screen.sms
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +22,7 @@ fun PermissionScreen(onRequestPermission: () -> Unit) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("SMS permission is required to read messages.", style = MaterialTheme.typography.bodyLarge)
+            Text("App needs permission to read sms", style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = onRequestPermission

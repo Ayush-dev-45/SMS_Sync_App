@@ -8,6 +8,7 @@ import com.example.sms_sync.data.model.ApiRequest
 import com.example.sms_sync.data.model.SmsPayLoad
 import com.example.sms_sync.data.remote.RetrofitInstance
 import com.example.sms_sync.data.repository.SmsRepository
+import com.example.sms_sync.utils.NotificationUtils
 
 
 class SmsSyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
@@ -15,7 +16,7 @@ class SmsSyncWorker(context: Context, params: WorkerParameters) : CoroutineWorke
             return try {
                 val smsList = SmsRepository.getNewSmsSinceLastSync(applicationContext)
                 Log.d("SmsSyncWorker", "Found ${smsList.size} messages to sync")
-                //we don't need type in req.body
+                //we don't need "type" in req.body hence using payload here
                 val smsPayLoad = smsList.map {
                     SmsPayLoad(
                         title = it.title,
@@ -28,20 +29,19 @@ class SmsSyncWorker(context: Context, params: WorkerParameters) : CoroutineWorke
 //                Log.d("msg", test.toString());
                 if(smsPayLoad.isNotEmpty()){
                     val response = RetrofitInstance.api.sendSms(
-                        //hardcoded for now  --> Later saving after every login
-                        key = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE0OSwiaWF0IjoxNzQ5ODA1NzAyfQ.NTZQcaA1rGlDaazMTQqg-RdmbFluhQXB-Nbop0zXUww",
                         request = ApiRequest(message_data = smsPayLoad)
                     )
                     Log.d("Response", "Synced ${response.count}")
                 } else {
-                    Log.d("Msg", "No new messages found!!!")
+                    Log.d("Msg_Status", "No new messages found!!!")
                 }
 //                if (response) {
-                Log.d("SmsSyncWorker", "Worker triggered at: ${System.currentTimeMillis()}")
+                Log.d("Sms_Sync_Worker", "Worker triggered at: ${System.currentTimeMillis()}")
+                //Notif_function -- to add here
                 Result.success()
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("Sms_Sync_Worker", "Error: ${e.message}")
                 Result.retry()
             }
         }
-    }
+}
