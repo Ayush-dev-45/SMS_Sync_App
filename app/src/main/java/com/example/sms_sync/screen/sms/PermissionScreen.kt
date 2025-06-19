@@ -27,7 +27,7 @@ fun PermissionScreen(onRequestPermission: () -> Unit) {
             Button(
                 onClick = onRequestPermission
             ) {
-                Text("Grant Permission")
+                Text("Grant Permission Now")
             }
         }
     }

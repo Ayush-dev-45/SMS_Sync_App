@@ -22,11 +22,19 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.sms_sync.data.model.ApiRequest
+import com.example.sms_sync.data.remote.RetrofitInstance
+import com.example.sms_sync.data.repository.SmsRepository
 import com.example.sms_sync.screen.sms.PermissionScreen
 import com.example.sms_sync.screen.sms.SmsScreen
 import com.example.sms_sync.ui.theme.SMS_SyncTheme
 import com.example.sms_sync.screen.sms.SmsViewModel
 import com.example.sms_sync.worker.SmsSyncWorker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
