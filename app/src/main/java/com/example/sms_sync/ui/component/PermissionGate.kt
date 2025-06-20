@@ -19,7 +19,7 @@ import com.example.sms_sync.ui.screen.sms.SmsViewModel
 import com.example.sms_sync.worker.SmsSyncScheduler.scheduleSmsSyncWorker
 
 @Composable
-fun PermissionGate() {
+fun SmsPermissionGate() {
     val context = LocalContext.current
     var hasSmsPermission by remember {
         mutableStateOf(

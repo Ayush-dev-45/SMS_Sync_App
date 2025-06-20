@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.sms_sync.ui.component.PermissionGate
+import com.example.sms_sync.ui.component.SmsPermissionGate
 import com.example.sms_sync.ui.theme.SMS_SyncTheme
 
 class MainActivity : ComponentActivity() {
@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SMS_SyncTheme {
-                PermissionGate()
+                SmsPermissionGate()
             }
         }
     }
