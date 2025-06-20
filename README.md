@@ -22,6 +22,23 @@ An Android app that reads and syncs SMS messages in the background every 15 minu
 - API integration using Retrofit
 ---
 
+## 📁 Project Structure & Responsibilities
+
+| File / Directory       | Responsibility                                                                                           |
+|------------------------|----------------------------------------------------------------------------------------------------------|
+| `MainActivity.kt`      | Entry point of the app. Sets up the UI and theme.                                                        |
+| `SmsPermissionGate.kt` | Checks and requests SMS permissions. Loads either the `PermissionScreen` or `SmsScreen` accordingly.     |
+| `PermissionScreen.kt`  | Shown when SMS permission is not granted. Prompts the user to allow access.                              |
+| `SmsScreen.kt`         | Displays the list of SMS messages in a card layout. Uses Compose's `LazyColumn`.                         |
+| `SmsItem.kt`           | Composable for rendering each SMS in a stylized card view.                                               |
+| `SmsViewModel.kt`      | Handles logic for loading SMS from repository and exposes them as `StateFlow` to the UI.                 |
+| `SmsRepository.kt`     | Retrieves SMS messages from the system content provider.                                                 |
+| `SmsData.kt`           | Data model class representing a single SMS message.                                                      |
+| `SmsSyncWorker.kt`     | A `CoroutineWorker` that performs the periodic background sync of SMS data.                              |
+| `RetrofitInstance.kt`  | Configures and exposes a singleton Retrofit API client.                                                  |
+| `ApiService.kt`        | Defines the API interface for syncing SMS data to a backend server.                                      |
+| `work/Scheduler.kt`    | (Optional best practice) You may move `scheduleSmsSyncWorker()` here for cleaner separation of concerns. |
+
 ## Permissions Used
 
 - `android.permission.READ_SMS`  
